@@ -8,9 +8,12 @@ from datetime import datetime
 
 
 def process_song_file(cur, all_files):
+    # process song files
+    # retrieve relevant files for songs and artists tables
 
     song_data = []
     artist_data = []
+
     for f in all_files:
         with open(f, "r") as fhand:
             record = json.load(fhand)
@@ -39,10 +42,13 @@ def process_song_file(cur, all_files):
 
 
 def process_log_file(cur, all_files):
+    # process all log files
+    # retrieve relevant fields for users, time and song plays tables
 
     user_data = []
     time_data = []
     song_plays_data = []
+
     for f in all_files:
         with open(f, "r") as fhand:
             for line in fhand:
@@ -100,7 +106,7 @@ def process_log_file(cur, all_files):
                         record["userAgent"],
                     )
                 )
-
+    # insert users, time and song plays data into database
     execute_values(cur, user_table_insert, user_data)
     execute_values(cur, time_table_insert, time_data)
     execute_values(cur, songplay_table_insert, song_plays_data)
@@ -119,6 +125,9 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
+    # connect to database and obtain cursor
+    # call function to process songs and log data files
+
     config = dotenv_values(".env")
     param_string = f"host={config['HOST']} dbname=sparkifydb user={config['USER']} password={config['PASSWORD']}"
     conn = psycopg2.connect(param_string)

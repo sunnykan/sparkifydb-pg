@@ -10,6 +10,7 @@ def create_database():
     """
 
     config = dotenv_values(".env")
+
     # connect to default database
     param_string = f"host={config['HOST']} dbname=postgres user={config['USER']} password={config['PASSWORD']}"
     conn = psycopg2.connect(param_string)
@@ -52,16 +53,9 @@ def create_tables(cur, conn):
 
 def main():
     """
-    - Drops (if exists) and Creates the sparkify database.
-
-    - Establishes connection with the sparkify database and gets
-    cursor to it.
-
-    - Drops all the tables.
-
-    - Creates all tables needed.
-
-    - Finally, closes the connection.
+    - Obtain cursor and connection to Sparkifydb database
+    - Create tables
+    - Close connection
     """
     cur, conn = create_database()
 

@@ -1,4 +1,4 @@
-# DROP TABLES
+# Drop tables
 
 songplay_table_drop = "drop table if exists songplays"
 user_table_drop = "drop table if exists users"
@@ -6,7 +6,7 @@ song_table_drop = "drop table if exists songs"
 artist_table_drop = "drop table if exists artists"
 time_table_drop = "drop table if exists time"
 
-# CREATE TABLES
+# Create tables
 songplay_table_create = """create table if not exists songplays 
 (
     songplay_id serial, 
@@ -81,7 +81,7 @@ time_table_create = """create table if not exists time
 );
 """
 
-# INSERT RECORDS
+# Queries for inserting records
 
 songplay_table_insert = """insert into songplays 
 (user_id, song_id, artist_id, session_id, start_time, level, location, user_agent) values %s
@@ -107,7 +107,7 @@ time_table_insert = """insert into time
 on conflict on constraint time_pkey do nothing
 """
 
-# FIND SONGS
+# Retrieve song ids and artist ids
 
 song_select = """select s.song_id, a.artist_id 
 from songs s 
@@ -116,7 +116,7 @@ on s.artist_id = a.artist_id
 where s.title = %s and a.name = %s and s.duration = %s;
 """
 
-# QUERY LISTS
+# Query lists
 
 create_table_queries = [
     user_table_create,
