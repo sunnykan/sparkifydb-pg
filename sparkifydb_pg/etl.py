@@ -1,11 +1,10 @@
-import os
-import glob
+import json
 import psycopg2
 from psycopg2.extras import execute_values
-import json
 from sql_queries import *
 from dotenv import dotenv_values
 from pathlib import Path
+from datetime import datetime
 
 
 def process_song_file(cur, all_files):
@@ -39,47 +38,72 @@ def process_song_file(cur, all_files):
     execute_values(cur, artist_table_insert, artist_data)
 
 
-def process_log_file(cur, filepath):
-    pass
-    # open log file
-    # df =
+def process_log_file(cur, all_files):
 
-    # # filter by NextSong action
-    # df =
+    user_data = []
+    time_data = []
+    song_plays_data = []
+    for f in all_files:
+        with open(f, "r") as fhand:
+            for line in fhand:
+                record = json.loads(line.rstrip("\n"))
 
-    # # convert timestamp column to datetime
-    # t =
+                if record["page"] != "NextSong":
+                    continue
 
-    # # insert time data records
-    # time_data =
-    # column_labels =
-    # time_df =
+                # users
+                user_data.append(
+                    (
+                        record["userId"],
+                        record["firstName"],
+                        record["lastName"],
+                        record["gender"],
+                        record["level"],
+                    )
+                )
 
-    # for i, row in time_df.iterrows():
-    #     cur.execute(time_table_insert, list(row))
+                # time
+                t = datetime.fromtimestamp(record["ts"] / 1000)
+                time_data.append(
+                    (
+                        record["ts"],
+                        t.hour,
+                        t.day,
+                        t.isocalendar()[1],
+                        t.month,
+                        t.isocalendar()[0],
+                        t.isocalendar()[2],
+                    )
+                )
 
-    # # load user table
-    # user_df =
+                # songplays
+                cur.execute(
+                    song_select,
+                    (record["song"], record["artist"], round(record["length"])),
+                )
 
-    # # insert user records
-    # for i, row in user_df.iterrows():
-    #     cur.execute(user_table_insert, row)
+                results = cur.fetchone()
+                if results:
+                    songid, artistid = results
+                else:
+                    songid, artistid = None, None
 
-    # # insert songplay records
-    # for index, row in df.iterrows():
+                song_plays_data.append(
+                    (
+                        record["userId"],
+                        songid,
+                        artistid,
+                        record["sessionId"],
+                        record["ts"],
+                        record["level"],
+                        record["location"],
+                        record["userAgent"],
+                    )
+                )
 
-    #     # get songid and artistid from song and artist tables
-    #     cur.execute(song_select, (row.song, row.artist, row.length))
-    #     results = cur.fetchone()
-
-    #     if results:
-    #         songid, artistid = results
-    #     else:
-    #         songid, artistid = None, None
-
-    #     # insert songplay record
-    #     songplay_data =
-    #     cur.execute(songplay_table_insert, songplay_data)
+    execute_values(cur, user_table_insert, user_data)
+    execute_values(cur, time_table_insert, time_data)
+    execute_values(cur, songplay_table_insert, song_plays_data)
 
 
 def process_data(cur, conn, filepath, func):
@@ -103,7 +127,9 @@ def main():
     process_data(
         cur, conn, filepath=Path.cwd() / "data" / "song_data", func=process_song_file
     )
-    # process_data(cur, conn, filepath="data/log_data", func=process_log_file)
+    process_data(
+        cur, conn, filepath=Path.cwd() / "data" / "log_data", func=process_log_file
+    )
 
     conn.close()
 
