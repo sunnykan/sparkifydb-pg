@@ -8,8 +8,10 @@ from datetime import datetime
 
 
 def process_song_file(cur, all_files):
-    # process song files
-    # retrieve relevant files for songs and artists tables
+    """
+    - Process song files
+    - Retrieve relevant files for songs and artists tables
+    """
 
     song_data = []
     artist_data = []
@@ -42,8 +44,10 @@ def process_song_file(cur, all_files):
 
 
 def process_log_file(cur, all_files):
-    # process all log files
-    # retrieve relevant fields for users, time and song plays tables
+    """
+    - Process all log files
+    - Retrieve relevant fields for users, time and song plays tables
+    """
 
     user_data = []
     time_data = []
@@ -113,6 +117,11 @@ def process_log_file(cur, all_files):
 
 
 def process_data(cur, conn, filepath, func):
+    """
+    Get files in filepath and call relevant function for
+    processing the files
+    """
+
     # get all files matching extension from directory
     all_files = list(filepath.rglob("*.json"))
 
@@ -125,8 +134,10 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
-    # connect to database and obtain cursor
-    # call function to process songs and log data files
+    """
+    connect to database and obtain cursor
+    call function to process songs and log data files
+    """
 
     config = dotenv_values(".env")
     param_string = f"host={config['HOST']} dbname=sparkifydb user={config['USER']} password={config['PASSWORD']}"
