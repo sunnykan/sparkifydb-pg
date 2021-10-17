@@ -10,11 +10,11 @@ time_table_drop = "drop table if exists time"
 songplay_table_create = """create table if not exists songplays 
 (
     songplay_id serial, 
-    user_id text, 
+    user_id integer not null, 
     song_id text, 
     artist_id text, 
     session_id integer,
-    start_time bigint,
+    start_time bigint not null,
     level text,  
     location text, 
     user_agent text,
@@ -37,7 +37,7 @@ songplay_table_create = """create table if not exists songplays
 
 user_table_create = """create table if not exists users
 (
-    user_id text, 
+    user_id integer not null, 
     first_name text, 
     last_name text, 
     gender varchar(1), 
@@ -48,8 +48,8 @@ user_table_create = """create table if not exists users
 
 song_table_create = """create table if not exists songs
 (
-    song_id text,
-    artist_id text,
+    song_id text not null,
+    artist_id text not null,
     title text,
     year smallint,
     duration integer,
@@ -59,7 +59,7 @@ song_table_create = """create table if not exists songs
 
 artist_table_create = """create table if not exists artists
 (
-    artist_id text, 
+    artist_id text not null, 
     name text, 
     location text, 
     latitude integer, 
@@ -70,7 +70,7 @@ artist_table_create = """create table if not exists artists
 
 time_table_create = """create table if not exists time
 (
-    start_time bigint, 
+    start_time bigint not null, 
     hour smallint, 
     day smallint, 
     week smallint, 
@@ -88,23 +88,27 @@ songplay_table_insert = """insert into songplays
 """
 
 user_table_insert = """insert into users
-(user_id, first_name, last_name, gender, level) values %s
-on conflict on constraint users_pkey do nothing
+(user_id, first_name, last_name, gender, level) values (%s,  %s,  %s,  %s,  %s)
+on conflict on constraint users_pkey
+    do update set level = EXCLUDED.level
 """
 
 song_table_insert = """insert into songs
 (song_id, title, artist_id, year, duration) values %s 
-on conflict on constraint songs_pkey do nothing
+on conflict on constraint songs_pkey 
+    do nothing
 """
 
 artist_table_insert = """insert into artists
 (artist_id, name, location, latitude, longitude) values %s
-on conflict on constraint artists_pkey do nothing
+on conflict on constraint artists_pkey 
+    do nothing
 """
 
 time_table_insert = """insert into time
 (start_time, hour, day, week, month, year, weekday) values %s
-on conflict on constraint time_pkey do nothing
+on conflict on constraint time_pkey 
+    do nothing
 """
 
 # Retrieve song ids and artist ids

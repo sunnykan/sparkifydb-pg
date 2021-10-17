@@ -1,6 +1,6 @@
 import json
 import psycopg2
-from psycopg2.extras import execute_values
+from psycopg2.extras import execute_values, execute_batch
 from sql_queries import *
 from dotenv import dotenv_values
 from pathlib import Path
@@ -111,7 +111,7 @@ def process_log_file(cur, all_files):
                     )
                 )
     # insert users, time and song plays data into database
-    execute_values(cur, user_table_insert, user_data)
+    execute_batch(cur, user_table_insert, user_data)  # execute_values does not work
     execute_values(cur, time_table_insert, time_data)
     execute_values(cur, songplay_table_insert, song_plays_data)
 
