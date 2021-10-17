@@ -6,7 +6,7 @@ Analyze data on songs and user activity on a music streaming app to understand w
 
 ![ER Diagram](https://github.com/sunnykan/sparkifydb_pg/blob/main/images/er_diagram.png "ER Diagram")
 
-* Ideally, to comply with a star schema, artist_id should be dropped from the songs table.
+* Ideally, to comply with a star schema, **artist_id** should be dropped from the songs table.
 
 # Execution
 Clone the project and run the following commands in order:
