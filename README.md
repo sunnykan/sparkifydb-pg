@@ -2,6 +2,10 @@
 
 Analyze data on songs and user activity on a music streaming app to understand what music users are listening to on the service. Design a database schema to facilitate the analysis. User activity and metadata on songs are recorded in separate JSON files which are kept in separate directories. Create an ETL pipeline to populate the new Postgres database using data from these files in the two directories. The database uses a star schema with a fact table and several dimension tables.
 
+# Schema
+
+![ER Diagram](https://github.com/sunnykan/sparkifydb_pg/blob/main/images/er_diagram.png "ER Diagram")
+
 # Execution
 Clone the project and run the following commands in order:
 
